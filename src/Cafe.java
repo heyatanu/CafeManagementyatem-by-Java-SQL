@@ -44,22 +44,15 @@ class Store {
                 int AoptionCh = in .nextInt();
                 if (AoptionCh == 1) {
                   int randid = (int)(1000 * Math.random()); //CREATE A RANDOM ID 
-                  int randprice = (int)(1000 * Math.random()); //CREATE A PRICE 
-                  int randdiscount = (int)(50 * Math.random()); //CREATE A DISCOUNT 
-                  String[] items = {
-                    "Coffee",
-                    "Tea",
-                    "Coca Cola",
-                    "Orange Juice",
-                    "Apple Juice",
-                    "Choclate Cake",
-                    "Mint CupCake",
-                    "Egg",
-                    "Burger"
-                  };
-                  int randi = items.length;
-                  int randindex = (int)((randi - 1) * Math.random()); //PICK A RANDOM ITEM 
-                  Admin.AddProduct(randid, items[randindex], randprice, randdiscount, 100);
+                  System.out.print("\n Enter item name -");
+                  String itemname=in.next();
+                  System.out.print("\n Enter item price -");
+                  int randprice=in.nextInt();
+                  System.out.print("\n Enter item discount(%) -");
+                  int randdiscount=in.nextInt();
+                  System.out.print("\n Enter item stck -");
+                  int randstock=in.nextInt();
+                  Admin.AddProduct(randid, itemname, randprice, randdiscount, randstock);
                 } else if (AoptionCh == 2) {
                   try {
                     System.out.print("\nEnter the id of product you want to delete - ");
