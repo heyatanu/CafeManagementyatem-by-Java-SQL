@@ -3,7 +3,6 @@ import java.lang.Math;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Scanner;
-
 public class Cafe {
 
   public static void main(String[] args) {
@@ -38,9 +37,10 @@ class Store {
           if (Admin.AdminCheck(adminusername, adminpassword)) {
             System.out.println("\n\t WELCOME TO ADMIN PANAL (Double check before do anything this panal is sensitive)");
             while (true) {
-              System.out.print("\n\tADMIN\n\t1.Add a new item \n\t2.Remove item\n\t3.Display item list\n\t4.Update item items\n\t0.Exit");
+            	
+              System.out.print("\n\tADMIN\n\t1.Add a new item \n\t2.Remove item\n\t3.Display item list\n\t4.Update item items\n\t5.Search With ID\n\t0.Exit");
               try {
-                System.out.print("\n Enter your interest -");
+                System.out.print("\n Enter your interest(Admin) -");
                 int AoptionCh = in .nextInt();
                 if (AoptionCh == 1) {
                   int randid = (int)(1000 * Math.random()); //CREATE A RANDOM ID 
@@ -50,21 +50,31 @@ class Store {
                   int randprice=in.nextInt();
                   System.out.print("\n Enter item discount(%) -");
                   int randdiscount=in.nextInt();
-                  System.out.print("\n Enter item stck -");
+                  System.out.print("\n Enter item stock -");
                   int randstock=in.nextInt();
                   Admin.AddProduct(randid, itemname, randprice, randdiscount, randstock);
                 } else if (AoptionCh == 2) {
                   try {
                     System.out.print("\nEnter the id of product you want to delete - ");
                     int checksts = in .nextInt();
-                    Admin.DeleteProduct(checksts);
+                    if(Product1.CheckAvalability(checksts, 1)) {
+                        Admin.DeleteProduct(checksts);	
+                    }
+                    else {
+                    	System.out.println("\nNot found in the list...");
+                    }
                   } catch (Exception e) {
                     System.out.println("\n\tINVALID...");
                     break;
                   }
                 } else if (AoptionCh == 3) {
                   Product1.ProductDisplay(1);
-                } else if (AoptionCh == 4) {
+                } else if (AoptionCh == 5) {
+                	System.out.print("\nEnter the id of product you want to search - ");
+                    int checksts = in .nextInt();
+                    Admin.SearchProduct(checksts);
+                  }
+                else if (AoptionCh == 4) {
                   try {
                     System.out.print("\nEnter the id of product you want to update - ");
                     int checksts = in .nextInt();
@@ -235,7 +245,7 @@ class Product {
         System.out.print(", Price: " + pprice);
         System.out.print(", Discount: " + pdiscount + "%");
         if (forwhose == 1) {
-          System.out.print(", Sttock: " + pinstock);
+          System.out.print(", Stock: " + pinstock);
         }
         if (pinstock <= 0) {
           System.out.print(", ITEM OUT OF STOCK \n");
@@ -328,7 +338,7 @@ class Product {
   }
 
   void CustomerCheckOut(Integer[] myProductList, Integer[] myNoOfProducts) { //CHECKOUT THE CUSTOMER GENARATE BILL 
-    int finalprice = 0;
+    double finalprice = 0;
     System.out.println("\nBill\nID  Price  Qantity  Discount  TotalPrice\n");
     for (int i = 0; i < myProductList.length; i++) {
       if (myNoOfProducts[i] == -9999) {
@@ -386,8 +396,9 @@ class Product {
       }
     }
     System.out.println("\n\tYour Final price is " + finalprice);
+    
     //DISCOUNT
-    while (true) {
+    if (finalprice!=0.0) {while (true) {
       try {
         System.out.print("Do you have any Discount code(1/0) :- ");
         int disch = in .nextInt();
@@ -410,7 +421,7 @@ class Product {
         System.out.println("INVALID INPUT");
         break;
       }
-    }
+    }}
     System.out.println("\n\tYour Grand price is " + finalprice);
     System.out.println("\n\t THANK YOU ");
   }
@@ -423,6 +434,20 @@ class Customer { //CUSTOMER CLASS
 
   void AddToMyList(int myProductId, int noOfProduct, Product product) { // ADD THE MOVIE IN CUSTOMER LIST
     if (product.CheckAvalability(myProductId, noOfProduct)) {
+        boolean found = false;
+        int ind=0;
+    	for (int n = 0 ;n<myProductList.length;n++) {
+    	      if (myProductList[n] == myProductId) {
+    	        found = true;
+    	        ind=n;
+    	        break;
+    	      }
+    	    }
+    	if (found) {
+    		System.out.println("\n\tProduct Id " + myProductId + " added to your list. With quantity " + noOfProduct + ".");
+    		myNoOfProducts[ind]=myNoOfProducts[ind]+noOfProduct;
+    	}
+    	else {
       System.out.println("\n\tProduct Id " + myProductId + " added to your list. With quantity " + noOfProduct + ".");
       ArrayList < Integer > myList = new ArrayList < Integer > (Arrays.asList(myProductList));
       myList.add(myProductId);
@@ -431,6 +456,7 @@ class Customer { //CUSTOMER CLASS
       ArrayList < Integer > myList1 = new ArrayList < Integer > (Arrays.asList(myNoOfProducts));
       myList1.add(noOfProduct);
       myNoOfProducts = myList1.toArray(myNoOfProducts);
+    	}
     } else {
       System.out.println("\n\tProduct ID " + myProductId + " is not avalable in our store OR It is stock out.");
     }

@@ -6,6 +6,7 @@ import java.sql.Statement;
 import java.util.Scanner;
 
 public class Admin {
+
   static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
   static final String DB_URL = "jdbc:mysql://localhost/cafemanagementsystem";
   static final String USER = "root";
@@ -274,4 +275,71 @@ public class Admin {
     return -1;
   }
 
+  
+  
+  
+  
+  
+  public static void SearchProduct(int passid) { // DISPLAY THE AVALABLE ITEMS LIST 
+	    Connection conn = null;
+	    Statement stmt = null;
+	    int c = 0;
+	    try {
+
+	      Class.forName("com.mysql.jdbc.Driver");
+
+	      // System.out.println("\n\tConnecting to database...");
+	      conn = DriverManager.getConnection(DB_URL, USER, PASS);
+
+	      stmt = conn.createStatement();
+	      String sql;
+	      sql = "SELECT * FROM cafelist where pid="+passid;
+	      ResultSet rs = stmt.executeQuery(sql);
+	      System.out.println("\nYour product details...");
+	      while (rs.next()) {
+	        c = c + 1;
+	        int pid = rs.getInt("pid");
+	        String pname = rs.getString("pname");
+	        int pprice = rs.getInt("pprice");
+	        int pdiscount = rs.getInt("pdiscount");
+	        int pinstock = rs.getInt("pinstock");
+	        System.out.print("ID: " + pid);
+	        System.out.print(", Item name: " + pname);
+	        System.out.print(", Price: " + pprice);
+	        System.out.print(", Discount: " + pdiscount + "%");
+	          System.out.print(", Sttock: " + pinstock);
+	        if (pinstock <= 0) {
+	          System.out.print(", ITEM OUT OF STOCK \n");
+	        } else {
+	          System.out.print("\n");
+	        }
+	      }
+	      rs.close();
+	      stmt.close();
+	      conn.close();
+	      //          System.out.println("\n\tData fetch successfull...");
+	    } catch (SQLException se) {
+	      System.out.println("\n\tSQL ERROR");
+	    } catch (Exception e) {
+	      System.out.println("\n\tERROR OCCERS");
+	    } finally {
+	      try {
+	        if (stmt != null)
+	          stmt.close();
+	      } catch (SQLException se2) {}
+	      try {
+	        if (conn != null)
+	          conn.close();
+	      } catch (SQLException se) {
+	        System.out.println("\n\tSQL ERROR");
+	      }
+	    }
+	    if (c == 0) {
+	      System.out.println("\nItem Not Found In the list\n");
+	    }
+	  }
+
+
+	 
+	
 }
